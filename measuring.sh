@@ -27,7 +27,9 @@ do
 	echo -e "====== ${request} request ======" 
 	for cnt in $(seq 1 ${repeat_num})
 	do
-		res=$(ab -c ${multi_access} -n ${request} ${URL} | grep 'Requests per second' | sed -r 's/.* ([0-9]+)(\.)([0-9]+).*/\1\2\3/')
+		res=$(ab -c ${multi_access} -n ${request} ${URL} \
+  			| grep 'Requests per second' \
+     			| sed -r 's/.* ([0-9]+)(\.)([0-9]+).*/\1\2\3/')
 		sum=$(echo "${sum} + ${res}" | bc)
 	done
 	
@@ -35,4 +37,3 @@ do
 	echo "${request} ${avg}" >> ${filename}
 	echo "sum:${sum} | average:${avg}"
 done
-	
