@@ -1,10 +1,5 @@
 #!/bin/sh
-#measuring-test01.sh
-
-# URL=http://localhost:80/10M.dat
-# filename=res_test02_free.dat
-# multi_access=10
-# repeat_num=5
+#measuring.sh
 
 if [ "${#}" -ne 4 ]; then
 	echo "Usage: ${0} {targetURL} {outputFilename} {concurrency} {repeatNum}"
