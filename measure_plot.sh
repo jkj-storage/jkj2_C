@@ -3,7 +3,7 @@
 target_data="10M.dat"
 concurrency=10
 repeat=10
-measure_sh="measuring-test01.sh"
+measure_sh="measuring.sh"
 plot_sh="plot.sh"
 dist_name=`cat /etc/os-release | grep '^NAME' | sed -r 's/.*="?([^"]+)("?)/\1/'`
 dist_pret=`cat /etc/os-release | grep '^PRETTY' | sed -r 's/.*="?([^"]+)("?)/\1/'`
