@@ -14,7 +14,10 @@ text_xlabel=${7}
 text_ylabel=${8}
 
 if [ "${#}" -ne 8 ]; then
-        echo "Usage: ${0} {targetFilename1} {lineTitle1} {targetFilename2} {lineTitle2} {outputFilename} {graphTitle} {xlabel} {ylabel}"
+        echo "Usage: ${0} {targetFilename1} {lineTitle1} \
+                          {targetFilename2} {lineTitle2} \
+                          {outputFilename} \
+                          {graphTitle} {xlabel} {ylabel}"
         exit 1
 fi
 
@@ -24,6 +27,7 @@ set xlabel "${text_xlabel}"
 set ylabel "${text_ylabel}"
 set title "${text_title}"
 set output "${outputFilename}"
-plot "${targetFilename1}" with lines title "${text_line_title1}", "${targetFilename2}" with lines title "${text_line_title2}"
+plot "${targetFilename1}" with lines title "${text_line_title1}", \
+     "${targetFilename2}" with lines title "${text_line_title2}"
 exit
 EOF
