@@ -30,10 +30,10 @@ do
 		res=$(ab -c ${multi_access} -n ${request} ${URL} \
   			| grep 'Requests per second' \
      			| sed -r 's/.* ([0-9]+)(\.)([0-9]+).*/\1\2\3/')
-		sum=$(echo "${sum} + ${res}" | bc)
+		sum=$(echo "scale=2; ${sum} + ${res}" | bc)
 	done
 	
-	avg=$(echo "${sum} / ${repeat_num}" | bc)
+	avg=$(echo "scale=2; ${sum} / ${repeat_num}" | bc)
 	echo "${request} ${avg}" >> ${filename}
 	echo "sum:${sum} | average:${avg}"
 done
