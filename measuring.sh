@@ -24,7 +24,7 @@ for request in $(seq 10 10 100) $(seq 200 100 1000) # $(seq 2000 1000 10000)
 do
 	sleep 2
 	sum=0
-	echo -e "====== ${request} request ======" 
+	echo "====== ${request} request ======" 
 	for cnt in $(seq 1 ${repeat_num})
 	do
 		res=$(ab -c ${multi_access} -n ${request} ${URL} \
