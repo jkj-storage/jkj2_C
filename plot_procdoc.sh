@@ -23,6 +23,7 @@ fi
 
 gnuplot << EOF
 set terminal png
+set logscale x
 set xlabel "${text_xlabel}"
 set ylabel "${text_ylabel}"
 set title "${text_title}"
