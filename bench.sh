@@ -4,13 +4,15 @@
 #================================
 target_data="40M.dat"
 concurrency=10
-repeat=10
+repeat=30
 
 add_comment=""
 
 #================================
 
-
+if [ -n "${add_comment}" ]; then
+        add_comment="(${add_comment})"
+fi
 
 measure_sh="measuring.sh"
 plot_sh="plot.sh"
@@ -21,10 +23,14 @@ server_info=`ab -c 1 -n 1 http://localhost:80/index.html`
 dist_name=`echo "${os_info}" | grep '^NAME' | sed -r 's/.*="?([^"]+)("?)/\1/'`
 dist_pret=`echo "${os_info}" | grep '^PRETTY' | sed -r 's/.*="?([^"]+)("?)/\1/'`
 
-current_server=`echo "${server_info}" | grep '^Server Software' | sed -r 's/.*(Apache|nginx|h2o)\/(.*)/\1/'`
-current_server_version=`echo "${server_info}" | grep '^Server Software' | sed -r 's/.*(Apache|nginx|h2o)\/(.*)/\2/'`
+current_server=`echo "${server_info}" | grep '^Server Software' | sed -r 's/.*(Apache|nginx|h2o)\/?(.*)/\1/'`
+current_server_version=`echo "${server_info}" | grep '^Server Software' | sed -r 's/.*(Apache|nginx|h2o)\/?(.*)/\2/'`
 cpu_proc=`cat /proc/cpuinfo | grep processor | wc -l`
 mem_cap=`echo $(cat /proc/meminfo | grep '^MemTotal:' | sed -r 's/.+ +([0-9]+).*/\1/') / 1024 | bc -l | xargs printf "%.0f\n"`
+
+if [ "${current_server}" = "h2o" ]; then
+        current_server_version=$(h2o --version | grep '^h2o' | sed -r 's|.*([0-9]\.[0-9]\.[0-9])|\1|')
+fi
 
 echo "dist_name: ${dist_name}"
 echo "dist_pretty: ${dist_pret}"
@@ -40,6 +46,10 @@ echo "data_name: ${data_name}"
 echo "filename data: ${filename}.dat"
 echo "filename image: ${filename}.png"
 
+title="${dist_pret}, processor${cpu_proc}, ${mem_cap}MiB, ${current_server}/${current_server_version}, \n${data_name} request per second ${add_comment}"
+
+echo "glaphtitle: ${title}"
+
 #TODO: measure.sh と plot.sh の引数見直し、title変更＆改行追加   諸々debian対応
 
 echo "====== measure start ======"
@@ -50,7 +60,6 @@ echo "====== measure start ======"
 #===========================
 
 echo "====== plot start ======"
-title="${dist_pret}, processor${cpu_proc}, ${mem_cap}MiB, ${current_server}/${current_server_version}, \n${data_name} request per second (${add_comment})"
 ./${plot_sh} "${filename}.dat" "${filename}.png" "${title}" "concurrency: ${concurrency}" "Number of Access" "Requests per second"
 
 echo "====== upload data (${dist_name}) ======"
