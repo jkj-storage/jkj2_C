@@ -14,18 +14,18 @@ if [ -n "${add_comment}" ]; then
         add_comment="(${add_comment})"
 fi
 
-measure_sh="measuring.sh"
+measure_sh="measuring_report.sh"
 plot_sh="plot.sh"
 
 os_info=`cat /etc/os-release`
-server_info=`ab -c 1 -n 1 http://localhost:80/index.html`
+server_info=`ab -c 1 -n 1 http://127.0.0.1:80/index.html`
 
 dist_name=`echo "${os_info}" | grep '^NAME' | sed -r 's/.*="?([^"]+)("?)/\1/'`
 dist_pret=`echo "${os_info}" | grep '^PRETTY' | sed -r 's/.*="?([^"]+)("?)/\1/'`
 
 # current_server=`echo "${server_info}" | grep '^Server Software' | sed -r 's/Server Software: +(Apache|nginx|h2o)\/?(.*)/\1/'`
-current_server=`echo "${server_info}" | grep '^Server Software' | sed -r 's/Server Software: +(.+)\/?(.*)/\1/'`
-current_server_version=`echo "${server_info}" | grep '^Server Software' | sed -r 's/Server Software: +(.+)\/?(.*)/\2/'`
+current_server=`echo "${server_info}" |  grep '^Server Software' | sed -r 's/Server Software: +(Apache|nginx|h2o|LiteSpeed)\/?([0-9]+\.[0-9]+\.[0-9]+)?.*/\1/'`
+current_server_version=`echo "${server_info}" | grep '^Server Software' | sed -r 's/Server Software: +(Apache|nginx|h2o|LiteSpeed)\/?([0-9]+\.[0-9]+\.[0-9]+)?.*/\2/'`
 cpu_proc=`cat /proc/cpuinfo | grep processor | wc -l`
 mem_cap=`echo $(cat /proc/meminfo | grep '^MemTotal:' | sed -r 's/.+ +([0-9]+).*/\1/') / 1024 | bc -l | xargs printf "%.0f\n"`
 
@@ -48,6 +48,10 @@ filename=`echo "${dist_name}_p${cpu_proc}_${mem_cap}MiB_${current_server}_${data
 echo "data_name: ${data_name}"
 echo "filename data: ${filename}.dat"
 echo "filename image: ${filename}.png"
+
+measuring_command="./${measure_sh} \"http://127.0.0.1:80/${target_data}\" \"./${current_server}/${filename}.dat\" ${concurrency} ${repeat}"
+
+echo "measuring_command: ${measuring_command}"
 
 title="${dist_pret}, processor${cpu_proc}, ${mem_cap}MiB, ${current_server}/${current_server_version}, \n${data_name} request per second ${add_comment}"
 
