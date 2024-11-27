@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #bench.sh
 
 #================================
@@ -23,13 +23,16 @@ server_info=`ab -c 1 -n 1 http://localhost:80/index.html`
 dist_name=`echo "${os_info}" | grep '^NAME' | sed -r 's/.*="?([^"]+)("?)/\1/'`
 dist_pret=`echo "${os_info}" | grep '^PRETTY' | sed -r 's/.*="?([^"]+)("?)/\1/'`
 
-current_server=`echo "${server_info}" | grep '^Server Software' | sed -r 's/.*(Apache|nginx|h2o)\/?(.*)/\1/'`
-current_server_version=`echo "${server_info}" | grep '^Server Software' | sed -r 's/.*(Apache|nginx|h2o)\/?(.*)/\2/'`
+# current_server=`echo "${server_info}" | grep '^Server Software' | sed -r 's/Server Software: +(Apache|nginx|h2o)\/?(.*)/\1/'`
+current_server=`echo "${server_info}" | grep '^Server Software' | sed -r 's/Server Software: +(.+)\/?(.*)/\1/'`
+current_server_version=`echo "${server_info}" | grep '^Server Software' | sed -r 's/Server Software: +(.+)\/?(.*)/\2/'`
 cpu_proc=`cat /proc/cpuinfo | grep processor | wc -l`
 mem_cap=`echo $(cat /proc/meminfo | grep '^MemTotal:' | sed -r 's/.+ +([0-9]+).*/\1/') / 1024 | bc -l | xargs printf "%.0f\n"`
 
 if [ "${current_server}" = "h2o" ]; then
         current_server_version=$(h2o --version | grep '^h2o' | sed -r 's|.*([0-9]\.[0-9]\.[0-9])|\1|')
+elif [ "${current_server}" = "LiteSpeed" ]; then
+        current_server_version=$(dpkg -l | grep '^ii' | grep openlitespeed | sed -r 's/.*([0-9]+\.[0-9]+\.[0-9]).*/\1/')
 fi
 
 echo "dist_name: ${dist_name}"
@@ -48,7 +51,9 @@ echo "filename image: ${filename}.png"
 
 title="${dist_pret}, processor${cpu_proc}, ${mem_cap}MiB, ${current_server}/${current_server_version}, \n${data_name} request per second ${add_comment}"
 
-echo "glaphtitle: ${title}"
+echo -e "glaphtitle: ${title}"
+
+exit 0
 
 #TODO: measure.sh と plot.sh の引数見直し、title変更＆改行追加   諸々debian対応
 
