@@ -6,7 +6,7 @@ if [ "${#}" -ne 1 ]; then
         exit 1
 fi
 
-server_list=("apache" "nginx" "h2o")
+server_list=("apache" "nginx" "h2o" "lsws")
 server=${1}
 
 if ! `echo ${server_list[@]} | grep -q "${server}"` ; then
@@ -15,7 +15,7 @@ if ! `echo ${server_list[@]} | grep -q "${server}"` ; then
 fi
 
 server_info=`ab -c 1 -n 1 http://localhost:80/index.html`
-current_server=`echo "${server_info}" | grep '^Server Software' | sed -r 's/.*(Apache|nginx|h2o)\/?(.*)/\1/'`
+current_server=`echo "${server_info}" |  grep '^Server Software' | sed -r 's/Server Software: +(Apache|nginx|h2o|LiteSpeed)\/?([0-9]+\.[0-9]+\.[0-9]+)?.*/\1/'`
 
 if [ "${current_server}" == "Apache" ]; then
         systemctl stop apache2
@@ -29,6 +29,12 @@ elif [ "${current_server}" == "h2o" ]; then
         pid=$(ps ax | grep -E "h2o$" | grep -Ev '.sh' | sed -r 's| *([0-9]+) +.*h2o|\1|')
         kill ${pid}
         echo "kill h2o (pid: ${pid})"
+
+elif [ "${current_server}" == "LiteSpeed" ]; then
+        systemctl stop lsws
+        sleep 0.5
+        echo "kill LiteSpeed"
+
 else
         echo Running server does not exist.
 fi
@@ -47,4 +53,7 @@ elif [ "${server}" == "h2o" ]; then
         pid=$(ps ax | grep -E "h2o$" | grep -Ev '.sh' | sed -r 's| *([0-9]+) +.*h2o|\1|')
         echo "start h2o (pid: ${pid})"
 
+elif [ "${server}" == "lsws" ]; then
+        systemctl start lsws
+        echo "start LiteSpeed"
 fi
