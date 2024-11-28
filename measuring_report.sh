@@ -34,7 +34,7 @@ mkdir -p "${filedir}/alldata"
 rm -f "${filedir}/${filename}"
 rm -f "${filedir}/alldata/${alldata_filename}"
 
-for request in 10 30 50 100 300 500 1000 # 3000 5000 10000
+for request in 10 30 50 100 300 500 1000 3000 5000 10000
 do
         # sleep 2
         sum=0
@@ -68,6 +68,6 @@ do
         std_dev=$(echo "sqrt(${sqavg} - ${avg}^2)" | bc -l | xargs printf "%.2f\n")
         echo "${request} ${avg}" >> ${filepath}
         echo "sum:${sum} | sumsq: ${sumsq} | average:${avg} | sqaerage: ${sqavg} | variance: ${var} | stddev: ${std_dev}"
-        echo -e "\nsum:${sum} | sumsq: ${sumsq} | average:${avg} | sqaerage: ${sqavg} | variance: ${var} | stddev: ${std_dev}" >> ${alldata_filepath}
+        echo -e "\nsum:${sum} | sumsq: ${sumsq} | average:${avg} | sqaverage: ${sqavg} | variance: ${var} | stddev: ${std_dev}" >> ${alldata_filepath}
         echo "res_buf: ${res_buf}"
 done
