@@ -34,7 +34,7 @@ mkdir -p "${filedir}/alldata"
 rm -f "${filedir}/${filename}"
 rm -f "${filedir}/alldata/${alldata_filename}"
 
-for request in 10 30 50 100 300 500 1000 3000 5000 10000
+for request in 10 50 100 500 1000 5000 # 10000
 do
         # sleep 2
         sum=0
