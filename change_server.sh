@@ -32,7 +32,7 @@ elif [ "${current_server}" == "h2o" ]; then
 
 elif [ "${current_server}" == "LiteSpeed" ]; then
         systemctl stop lsws
-        sleep 0.5
+        sleep 1
         echo "kill LiteSpeed"
 
 else
