@@ -29,9 +29,9 @@ current_server_version=`echo "${server_info}" | grep '^Server Software' | sed -r
 cpu_proc=`cat /proc/cpuinfo | grep processor | wc -l`
 mem_cap=`echo $(cat /proc/meminfo | grep '^MemTotal:' | sed -r 's/.+ +([0-9]+).*/\1/') / 1024 | bc -l | xargs printf "%.0f\n"`
 
-if [ "${current_server}" = "h2o" ]; then
-        current_server_version=$(h2o --version | grep '^h2o' | sed -r 's|.*([0-9]\.[0-9]\.[0-9])|\1|')
-elif [ "${current_server}" = "LiteSpeed" ]; then
+# if [ "${current_server}" = "h2o" ]; then
+#       current_server_version=$(h2o --version | grep '^h2o' | sed -r 's|.*([0-9]\.[0-9]\.[0-9])|\1|')
+if [ "${current_server}" = "LiteSpeed" ]; then
         current_server_version=$(dpkg -l | grep '^ii' | grep openlitespeed | sed -r 's/.*([0-9]+\.[0-9]+\.[0-9]).*/\1/')
 fi
 
